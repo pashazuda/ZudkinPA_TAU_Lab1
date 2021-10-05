@@ -51,10 +51,17 @@ def getUnit(name):
         k = input('Пожалуйста введите кэффициент "k", если его значение не дано введите "0":')
         t = input('Пожалуйста введите кэффициент "t", если его значение не дано введите "0":')
 
-        if k.isdigit() and t.isdigit():
+        def is_number(str):
+            try:
+                float(str)
+                return True
+            except ValueError:
+                return False
+
+        if is_number(k) and is_number(t):
             needNewChoice = False
-            k = int(k)
-            t = int(t)
+            k = float(k)
+            t = float(t)
             if k != 0 and t != 0:
                 if name == 'Апериодическое звено':
                     unit = matlab.tf([k], [t, 1])
@@ -62,7 +69,17 @@ def getUnit(name):
                     unit = matlab.tf([k, 0], [t, 1])
                 # Для случая если человек выбрал безинерционное звено и веел данные для k и t
                 elif name == 'Безинерционное звено':
-                    print('\nДля безиннерционного звена t не может быть задана, пожалуйста повторите ввод')
+                    print('\nДля безиннерционного звена t не может быть задан, пожалуйста повторите ввод')
+                    return getUnit(name)
+                # Для случая если человек выбрал интегрирующее звено и веел данные для k и t
+                elif name == 'Интегрирующее звено':
+                    print('\nДля интегрирующего звена может быть задан только один из коэффициентов, пожалуйста '
+                          'повторите ввод')
+                    return getUnit(name)
+                # Для случая если человек выбрал идеальное дифференцирующее звено и веел данные для k и t
+                elif name == 'Идеальное дифференцирующее звено':
+                    print('\nДля идеального дифференцирующего звена может быть задан только один из коэффициентов, '
+                          'пожалуйста повторите ввод')
                     return getUnit(name)
             # Для ваирианта когда k не задано, а t задано
             elif k == 0 and t != 0:
@@ -118,21 +135,19 @@ graph(1, 'Переходная характеристика', y, x)
 [y, x] = matlab.impulse(peredFunc, timeLine)
 graph(2, 'Импульсная характеристика', y, x)
 
-timeLine = []
-for i in range(0, 300):
-    timeLine.append(i / 300)
+
 
 plt.subplot(2,2,3)
 plt.grid(True)
 mag, phase, omega = matlab.freqresp(peredFunc, timeLine)
-plt.plot(mag)
+plt.plot(mag, timeLine)
 plt.title('АЧХ')
 plt.ylabel('Амплитуда')
 plt.xlabel('Угловая частота, (рад/с)')
 
 plt.subplot(2,2,4)
 plt.grid(True)
-plt.plot(phase*180/math.pi)
+plt.plot(phase*180/math.pi, timeLine)
 plt.title('ФЧХ')
 plt.ylabel('Фаза')
 plt.xlabel('Угловая частота, (рад/с)')
