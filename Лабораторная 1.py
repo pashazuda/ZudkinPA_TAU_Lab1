@@ -4,6 +4,7 @@ import sympy
 import control.matlab as matlab
 import math
 
+
 def choice():
     bezinerc = 'Безинерционное звено'
     aperiod = 'Апериодическое звено'
@@ -14,11 +15,11 @@ def choice():
     needNewChoice = True
     while needNewChoice:
         userInput = input('Введите номер команды:\n'
-                      '1 - Безинерционное звено;\n'
-                      '2 - Апериодическое звено;\n'
-                      '3 - Интегрирующее звено;\n'
-                      '4 - Идеальное дифференцирующее звено;\n'
-                      '5 - Реальное дифференцирующее звено;\n')
+                          '1 - Безинерционное звено;\n'
+                          '2 - Апериодическое звено;\n'
+                          '3 - Интегрирующее звено;\n'
+                          '4 - Идеальное дифференцирующее звено;\n'
+                          '5 - Реальное дифференцирующее звено;\n')
 
         if userInput.isdigit():
             needNewChoice = False
@@ -41,6 +42,7 @@ def choice():
             print('\n Пожалуйста введите числовое значение')
             needNewChoice = True
     return name
+
 
 def getUnit(name):
     needNewChoice = True
@@ -89,17 +91,14 @@ def getUnit(name):
             needNewChoice = True
     return unit
 
+
 def graph(num, title, y, x):
-    plt.subplot(2,1, num)
+    plt.subplot(2, 2, num)
     plt.grid(True)
-    if title =='Переходная характеристика':
+    if title == 'Переходная характеристика':
         plt.plot(x, y, 'purple')
-    elif title =='Импульсная характеристика':
+    elif title == 'Импульсная характеристика':
         plt.plot(x, y, 'green')
-    elif title =='АЧХ':
-        plt.plot(x, y, 'purple')
-    elif title =='ФЧХ':
-        plt.plot(x, y, 'purple')
     plt.title(title)
     plt.ylabel('Амплитуда')
     plt.xlabel('Время (с)')
@@ -112,10 +111,30 @@ print(peredFunc)
 
 timeLine = []
 for i in range(0, 10000):
-    timeLine.append(i/1000)
+    timeLine.append(i / 1000)
 
 [y, x] = matlab.step(peredFunc, timeLine)
 graph(1, 'Переходная характеристика', y, x)
 [y, x] = matlab.impulse(peredFunc, timeLine)
 graph(2, 'Импульсная характеристика', y, x)
+
+timeLine = []
+for i in range(0, 300):
+    timeLine.append(i / 300)
+
+plt.subplot(2,2,3)
+plt.grid(True)
+mag, phase, omega = matlab.freqresp(peredFunc, timeLine)
+plt.plot(mag)
+plt.title('АЧХ')
+plt.ylabel('Амплитуда')
+plt.xlabel('Угловая частота, (рад/с)')
+
+plt.subplot(2,2,4)
+plt.grid(True)
+plt.plot(phase*180/math.pi)
+plt.title('ФЧХ')
+plt.ylabel('Фаза')
+plt.xlabel('Угловая частота, (рад/с)')
 plt.show()
+
