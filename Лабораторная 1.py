@@ -86,7 +86,7 @@ def getUnit(name):
                 if name == 'Интегрирующее звено':
                     unit = matlab.tf([1], [t, 0])
                 elif name == 'Идеальное дифференцирующее звено':
-                    unit = matlab.tf([t], [1])
+                    unit = matlab.tf([t, 0], [0.0000000000000000000001, 1])
                 # Для случая если человек выбрал безинерционное звено и не веел данные для k
                 elif name == 'Безинерционное звено':
                     print('\nДля безиннерционного звена k не может быть не задана, пожалуйста повторите ввод')
@@ -98,7 +98,7 @@ def getUnit(name):
                 elif name == 'Интегрирующее звено':
                     unit = matlab.tf([k], [1, 0])
                 elif name == 'Идеальное дифференцирующее звено':
-                    unit = matlab.tf([k], [1])
+                    unit = matlab.tf([k, 0], [0.0000000000000000000001, 1])
             # Если для обоих коэффициентов ввели 0 по ошибке
             elif k == 0 and t == 0:
                 print('\nОба коэффициента не могут быть не заданы, пожалуйста повторите ввод')
@@ -140,14 +140,14 @@ graph(2, 'Импульсная характеристика', y, x)
 plt.subplot(2,2,3)
 plt.grid(True)
 mag, phase, omega = matlab.freqresp(peredFunc, timeLine)
-plt.plot(mag, timeLine)
+plt.plot(mag)
 plt.title('АЧХ')
 plt.ylabel('Амплитуда')
 plt.xlabel('Угловая частота, (рад/с)')
 
 plt.subplot(2,2,4)
 plt.grid(True)
-plt.plot(phase*180/math.pi, timeLine)
+plt.plot(phase*180/math.pi)
 plt.title('ФЧХ')
 plt.ylabel('Фаза')
 plt.xlabel('Угловая частота, (рад/с)')
