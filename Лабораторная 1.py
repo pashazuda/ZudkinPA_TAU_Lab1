@@ -135,7 +135,9 @@ graph(1, 'Переходная характеристика', y, x)
 [y, x] = matlab.impulse(peredFunc, timeLine)
 graph(2, 'Импульсная характеристика', y, x)
 
-
+timeLine = []
+for i in range(0, 300):
+    timeLine.append(i / 300)
 
 plt.subplot(2,2,3)
 plt.grid(True)
