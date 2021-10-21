@@ -77,6 +77,7 @@ matlab.bode(d2)
 plt.show()
 
 # 6. Построить годограф Михайлова. Сделать вывод об устойчивости САУ по критерию Михайлова
+
 from sympy import *
 from numpy import arange
 import matplotlib.pyplot as plt
@@ -91,7 +92,8 @@ print("Действительная часть Re= %s"%zr)
 print("Мнимая часть Im= %s"%zm)
 x=[zr.subs({w:q}) for q in arange(0,100,0.1)]
 y=[zm.subs({w:q}) for q in arange(0,100,0.1)]
-plt.axis([-1000.0, 1000.0, -3000.0, 3000.0])
+plt.axis([-100000.0, 100000.0, -300000.0, 300000.0])
+plt.title("Начальная точка М(%s,%s)"%(zr.subs({w:0}),zm.subs({w:0})))
 plt.plot(x, y)
 plt.grid(True)
 plt.show()
