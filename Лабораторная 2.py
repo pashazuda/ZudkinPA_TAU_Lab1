@@ -6,7 +6,7 @@ import control.matlab as matlab
 import math
 
 # Передаточные функции звеньев структурной схемы
-oc = matlab.tf([22], [1])  # Отрицательная обратная связь
+oc = matlab.tf([0.22], [1])  # Отрицательная обратная связь
 gen = matlab.tf([1], [5, 1])  # Генератор
 gturb = matlab.tf([0.02, 1], [0.25, 1])  # Гидравлическая турбина
 isdev = matlab.tf([22], [20, 1])  # Исполнительное устройство
@@ -18,7 +18,6 @@ print('Исполнительное устройство: ', isdev)
 
 # Преобразование структурной схемы
 d = gen * gturb * isdev  # Последовательное соединение динамических звеньев
-print(d)
 d1 = matlab.feedback(d, oc)  # Для замкнутой системы
 d2 = d * oc  # Для разомкнутой системы
 
@@ -82,9 +81,14 @@ plt.show()
 from sympy import *
 from numpy import arange
 import matplotlib.pyplot as plt
-
+u = d1.den[0][0]
+dicu = {}
+dlinau = len(u)
+for i in range(dlinau):
+        dicu["%s" % i] = u[i]
 w = symbols(' w', real=True)
-z = -25 * I * w ** 3 - 106.2* w ** 2 + 34.93 * I * w + 485
+z = -(dicu["0"]) * I * w ** 3 - (dicu["1"]) * w ** 2 + (dicu["2"]) * I * w + (dicu["3"])
+# z = -25 * I * w ** 3 - 106.2 * w ** 2 + 34.93 * I * w + 485 для k = 22
 print("Характеристический многочлен замкнутой системы: %s" % z)
 zr = re(z)
 zm = im(z)
@@ -102,20 +106,20 @@ plt.show()
 # 7. На основании алгебраического критерия Рауса–Гурвица
 # рассчитать предельное значение Кос, при котором САУ теряет устойчивость
 
-for k in numpy.arange(0.0001, 0.9999, 0.0001):
+for k in numpy.arange(-0.9, 1, 0.0000001):
     oc = matlab.tf([k], [1])
     d1 = matlab.feedback(d, oc)
-
     r = d1.den[0][0]
     dic = {}
     dlina = len(r)
     for i in range(dlina):
         dic["%s" % i] = r[i]
-    matrix = [[dic["1"], dic["3"], 0],
+    matrix = numpy.array([[dic["1"], dic["3"],  0],
               [dic["0"], dic["2"], 0],
-              [0, dic["1"], dic["3"]]]
-    if numpy.linalg.det(matrix) == 0:
+              [0, dic["1"], dic["3"]]])
+    if (numpy.linalg.det(matrix) >= -0.1) & (numpy.linalg.det(matrix) <= 0.1):
         print('Предельное значение коэффициента обратной связи:', k)
+        break
 
 
 
