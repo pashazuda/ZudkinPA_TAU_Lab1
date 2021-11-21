@@ -4,9 +4,10 @@ import matplotlib.pyplot as plt
 import sympy
 import control.matlab as matlab
 import math
+#5.28129657228018
 
 # Передаточные функции звеньев структурной схемы
-oc = matlab.tf([22], [1])  # Отрицательная обратная связь
+oc = matlab.tf([5.281296400003636], [1])  # Отрицательная обратная связь
 gen = matlab.tf([1], [5, 1])  # Генератор
 gturb = matlab.tf([0.02, 1], [0.25, 1])  # Гидравлическая турбина
 isdev = matlab.tf([22], [20, 1])  # Исполнительное устройство
@@ -106,18 +107,17 @@ plt.show()
 # 7. На основании алгебраического критерия Рауса–Гурвица
 # рассчитать предельное значение Кос, при котором САУ теряет устойчивость
 
-for k in numpy.arange(-0.9, 1, 0.0000001):
+for k in numpy.arange(5.28, 5.3, 0.0000001):
     oc = matlab.tf([k], [1])
     d1 = matlab.feedback(d, oc)
-    r = d1.den[0][0]
-    dic = {}
-    dlina = len(r)
-    for i in range(dlina):
-        dic["%s" % i] = r[i]
-    matrix = numpy.array([[dic["1"], dic["3"],  0],
-              [dic["0"], dic["2"], 0],
-              [0, dic["1"], dic["3"]]])
-    if (numpy.linalg.det(matrix) >= -0.1) & (numpy.linalg.det(matrix) <= 0.1):
+    r1 = d1.den[0][0]
+    dic1 = {}
+    dlina1 = len(r1)
+    for j in range(dlina1):
+        dic1["%s" % j] = r1[j]
+    matrix = numpy.array([[dic1["1"], dic1["3"]],
+              [dic1["0"], dic1["2"]]])
+    if (numpy.linalg.det(matrix) >= -0.0001) & (numpy.linalg.det(matrix) <= 0.0001):
         print('Предельное значение коэффициента обратной связи:', k)
         break
 
