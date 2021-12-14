@@ -166,9 +166,13 @@ print('б) Показатель колебательности:', pokaz_koleb_5)
 mag, phase, omega = matlab.bode(d1)
 plt.show()
 # 6. По интегральному методу:
-Q = 0
-for i in range(len(y)):
- Q = Q + math.fabs(y[i] - h_infinity)
+from scipy import integrate
+timeLine = numpy.arange(0, 100.01, 0.1)
+y, x = matlab.step(d1, timeLine)
+y_integr = []
+for i in y:
+    y_integr.append(math.fabs(h_infinity - i))
+Q = integrate.trapezoid(y_integr, x)
 print('5. По интегральному методу')
 print('Интеграл равен', Q)
 print()

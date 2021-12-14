@@ -118,5 +118,13 @@ for kp in numpy.arange(0.2, 200, 0.01):
                 print('Время регулирования: 15 = ', t_reg_3)
                 print('Перерегулирование: 21 = ', per_3)
                 print('Показатель колебательности: 1.16 = ', pokaz_koleb_5)
+from scipy import integrate
+timeLine = numpy.arange(0, 100.01, 0.1)
+y, x = matlab.step(d1, timeLine)
+y_integr = []
+for i in y:
+    y_integr.append(math.fabs(h_infinity - i))
+
+Q = integrate.trapezoid(y_integr, x)
 
 
